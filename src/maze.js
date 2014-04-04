@@ -199,5 +199,13 @@ var Maze = function (width, height) {
 
 }
 
-var m = new Maze(20, 20);
-m.render(m.generate());
+function generate() {
+	var width = +document.getElementById('width').value;
+	var height = +document.getElementById('height').value;
+
+	var m = new Maze(width, height);
+	m.render(m.generate());
+}
+
+document.getElementById('generate').addEventListener('click', generate);
+generate();

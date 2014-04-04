@@ -6,7 +6,18 @@
 	<link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
+	<header>
+		<label for="width">Width</label>
+		<input type="number" id="width" value="20" />
+		<label for="height">Height</label>
+		<input type="number" id="height" value="20" />
+		<button id="generate">Generate</button>
+	</header>
 	<canvas id="canvas"></canvas>
+	<footer>
+		<p>Copyright &copy; 2014 <a href="http://bmills.net">Brandon Mills</a>.</p>
+		<p><a href="https://github.com/btmills/mazes">Fork me on GitHub</a></p>
+	</footer>
 	<script src="js/grid.js"></script>
 	<script src="js/maze.js"></script>
 </body>
