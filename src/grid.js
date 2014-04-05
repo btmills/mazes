@@ -47,7 +47,7 @@ var Grid = function ($el) {
 		var _strokeStyle = ctx.strokeStyle;
 		ctx.lineCap      = 'round';
 		ctx.lineWidth    = WEIGHT;
-		ctx.strokeStyle  = 'black';
+		ctx.strokeStyle  = '#16191d';
 
 		ctx.beginPath();
 		ctx.moveTo(toPixels(x1), toPixels(y1));
