@@ -26,7 +26,7 @@ body {
 	min-height: 100vh;
 }
 
-header {
+form {
 	height: 60px;
 	background: #556270;
 	color: #eee;
@@ -37,10 +37,6 @@ header {
 	justify-content: center;
 	vertical-align: center;
 	line-height: 60px;
-}
-
-form {
-	height: 100%;
 }
 
 /* Kill Chrome's blue outline */
@@ -88,7 +84,7 @@ intput[type="text"]::-webkit-outer-spin-button {
 
 #main {
 	flex-grow: 1;
-	overflow-x: scroll;
+	overflow-x: auto;
 	width: 100%;
 	display: flex;
 	justify-content: center;
