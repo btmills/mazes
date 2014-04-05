@@ -42,7 +42,6 @@ var Grid = function ($el) {
 	}
 
 	function fill(x, y, color) {
-		console.log('Filling (' + x + ',' + y + ')');
 		var _fillStyle = ctx.fillStyle;
 		ctx.fillStyle = color;
 
@@ -60,6 +59,8 @@ var Grid = function ($el) {
 			throw new Error('Squares are not adjacent.');
 		}
 
+		var x = Math.max(x1, x2), y = Math.max(y1, y2);
+
 		var _lineCap     = ctx.lineCap;
 		var _lineWidth   = ctx.lineWidth;
 		var _strokeStyle = ctx.strokeStyle;
@@ -71,13 +72,13 @@ var Grid = function ($el) {
 		if (x1 === x2) {
 			// Bridge north/south squares
 			// Narrower x dimensions
-			ctx.moveTo(toPixels(x1) + WEIGHT, toPixels(y2));
-			ctx.lineTo(toPixels(x1 + 1) - WEIGHT, toPixels(y2));
+			ctx.moveTo(toPixels(x1) + WEIGHT, toPixels(y));
+			ctx.lineTo(toPixels(x1 + 1) - WEIGHT, toPixels(y));
 		} else {
 			// Bridge east/west squares
 			// Narrower y dimensions
-			ctx.moveTo(toPixels(x2), toPixels(y1) + WEIGHT);
-			ctx.lineTo(toPixels(x2), toPixels(y1 + 1) - WEIGHT);
+			ctx.moveTo(toPixels(x), toPixels(y1) + WEIGHT);
+			ctx.lineTo(toPixels(x), toPixels(y1 + 1) - WEIGHT);
 		}
 		ctx.stroke();
 
