@@ -177,5 +177,8 @@ function generate() {
   var m = new Maze(width, height);
   m.render(m.generate());
 }
-document.getElementById('generate').addEventListener('click', generate);
+document.getElementById('generate').addEventListener('click', function(event) {
+  event.preventDefault();
+  generate();
+});
 generate();

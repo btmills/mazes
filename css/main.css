@@ -39,9 +39,13 @@ header {
 	line-height: 60px;
 }
 
+form {
+	height: 100%;
+}
+
 /* Kill Chrome's blue outline */
 input[type="text"],
-button {
+input[type="submit"] {
 	border: 0;
 	outline: 0;
 }
@@ -70,6 +74,7 @@ intput[type="text"]::-webkit-outer-spin-button {
 	font-size: inherit;
 	margin: 0;
 	cursor: pointer;
+	height: 100%;
 	transition: 0.1s background;
 }
 
