@@ -1,6 +1,10 @@
 var Maze = function (width, height) {
 
 	var DIRECTIONS = ['north', 'south', 'east', 'west'];
+	var GREEN = '#4ecdc4', RED = '#ff6b6b';
+
+	var path = [];
+	var maze, grid;
 
 	function randomInt(max) {
 		return Math.floor(Math.random() * max);
@@ -8,6 +12,10 @@ var Maze = function (width, height) {
 
 	function randomElement(arr) {
 		return arr[randomInt(arr.length)];
+	}
+
+	function lastElement(arr) {
+		return arr[arr.length - 1];
 	}
 
 	/**
@@ -153,6 +161,7 @@ var Maze = function (width, height) {
 		}
 
 		start = randomElement(edges);
+		path.push(start);
 		do {
 			end = randomElement(edges);
 		} while (start.x === end.x || start.y === end.y);
@@ -167,24 +176,24 @@ var Maze = function (width, height) {
 		};
 	}
 
-	function render(maze) {
-		var grid = new Grid(document.getElementById('canvas'));
+	function bridgeEdge(square, color) {
+		if (square.x === 0) { // West
+			grid.bridge(square.x - 1, square.y, square.x, square.y, color);
+		} else if (square.y === 0) { // North
+			grid.bridge(square.x, square.y - 1, square.x, square.y, color);
+		} else if (square.x === (width - 1)) { // East
+			grid.bridge(square.x, square.y, square.x + 1, square.y, color);
+		} else if (square.y === (height - 1)) { // South
+			grid.bridge(square.x, square.y, square.x, square.y + 1, color);
+		} else {
+			throw new Error('Square is not on edge.');
+		}
+	}
+
+	function render($el) {
 		var x, y;
 
-		function bridgeEdge(square, color) {
-			if (square.x === 0) { // West
-				grid.bridge(square.x - 1, square.y, square.x, square.y, color);
-			} else if (square.y === 0) { // North
-				grid.bridge(square.x, square.y - 1, square.x, square.y, color);
-			} else if (square.x === (width - 1)) { // East
-				grid.bridge(square.x, square.y, square.x + 1, square.y, color);
-			} else if (square.y === (height - 1)) { // South
-				grid.bridge(square.x, square.y, square.x, square.y + 1, color);
-			} else {
-				throw new Error('Square is not on edge.');
-			}
-		}
-
+		grid = new Grid($el);
 		grid.clear();
 		grid.width(width);
 		grid.height(height);
@@ -208,30 +217,44 @@ var Maze = function (width, height) {
 			}
 		}
 
-		grid.fill(maze.start.x, maze.start.y, '#4ecdc4');
-		grid.fill(maze.end.x, maze.end.y, '#ff6b6b');
-		bridgeEdge(maze.start, '#4ecdc4');
-		bridgeEdge(maze.end, '#ff6b6b');
+		grid.fill(maze.start.x, maze.start.y, GREEN);
+		grid.fill(maze.end.x, maze.end.y, RED);
+		bridgeEdge(maze.start, GREEN);
+		bridgeEdge(maze.end, RED);
 	}
 
+	function move(dir) {
+		var pos = lastElement(path);
+		var previous = path[path.length - 2];
+		var next;
+
+		if (!maze.mesh[pos.x][pos.y][dir]) return false;
+
+		next = adjacentSquare(pos, dir);
+		if (!next) return false;
+
+		if (previous && next.x === previous.x && next.y === previous.y) {
+			grid.bridge(pos.x, pos.y, next.x, next.y, RED);
+			grid.fill(pos.x, pos.y, RED);
+			path.pop();
+		} else {
+			grid.bridge(pos.x, pos.y, next.x, next.y, GREEN);
+			grid.fill(next.x, next.y, GREEN);
+			path.push(next);
+		}
+
+		if (next.x === maze.end.x && next.y === maze.end.y) {
+			bridgeEdge(next, GREEN);
+			return true;
+		}
+		return false;
+	}
+
+	maze = generate();
+
 	return {
-		generate,
-		render
+		render,
+		move
 	};
 
 }
-
-function generate() {
-	var width = +document.getElementById('width').value;
-	var height = +document.getElementById('height').value;
-
-	var m = new Maze(width, height);
-	m.render(m.generate());
-}
-
-document.getElementById('generate')
-	.addEventListener('click', function (event) {
-		event.preventDefault();
-		generate();
-	});
-generate();
