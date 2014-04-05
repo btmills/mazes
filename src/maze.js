@@ -160,13 +160,30 @@ var Maze = function (width, height) {
 		openEdge(start);
 		search(start);
 
-		return mesh;
+		return {
+			mesh,
+			start,
+			end
+		};
 	}
 
-	function render(mesh) {
+	function render(maze) {
 		var grid = new Grid(document.getElementById('canvas'));
-		var width = mesh.length, height = mesh[0].length;
 		var x, y;
+
+		function bridgeEdge(square, color) {
+			if (square.x === 0) { // West
+				grid.bridge(square.x - 1, square.y, square.x, square.y, color);
+			} else if (square.y === 0) { // North
+				grid.bridge(square.x, square.y - 1, square.x, square.y, color);
+			} else if (square.x === (width - 1)) { // East
+				grid.bridge(square.x, square.y, square.x + 1, square.y, color);
+			} else if (square.y === (height - 1)) { // South
+				grid.bridge(square.x, square.y, square.x, square.y + 1, color);
+			} else {
+				throw new Error('Square is not on edge.');
+			}
+		}
 
 		grid.clear();
 		grid.width(width);
@@ -174,22 +191,27 @@ var Maze = function (width, height) {
 
 		for (x = 0; x < width; x++) {
 			for (y = 0; y < height; y++) {
-				if (!mesh[x][y].west) {
+				if (!maze.mesh[x][y].west) {
 					grid.line(x, y, x, y + 1);
 				}
-				if (!mesh[x][y].north) {
+				if (!maze.mesh[x][y].north) {
 					grid.line(x, y, x + 1, y);
 				}
 
 				// Only need to draw south and east on edges
-				if (x === width - 1 && !mesh[x][y].east) {
+				if (x === width - 1 && !maze.mesh[x][y].east) {
 					grid.line(x + 1, y, x + 1, y + 1);
 				}
-				if (y === height - 1 && !mesh[x][y].south) {
+				if (y === height - 1 && !maze.mesh[x][y].south) {
 					grid.line(x, y + 1, x + 1, y + 1);
 				}
 			}
 		}
+
+		grid.fill(maze.start.x, maze.start.y, '#4ecdc4');
+		grid.fill(maze.end.x, maze.end.y, '#ff6b6b');
+		bridgeEdge(maze.start, '#4ecdc4');
+		bridgeEdge(maze.end, '#ff6b6b');
 	}
 
 	return {

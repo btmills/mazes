@@ -34,6 +34,36 @@ var Grid = function($el) {
   function clear() {
     ctx.clearRect(0, 0, pixelWidth(), pixelHeight());
   }
+  function fill(x, y, color) {
+    console.log('Filling (' + x + ',' + y + ')');
+    var _fillStyle = ctx.fillStyle;
+    ctx.fillStyle = color;
+    ctx.fillRect(toPixels(x) + (WEIGHT / 2), toPixels(y) + (WEIGHT / 2), SIZE, SIZE);
+    ctx.fillStyle = _fillStyle;
+  }
+  function bridge(x1, y1, x2, y2, color) {
+    if (Math.abs(x2 - x1) + Math.abs(y2 - y1) !== 1) {
+      throw new Error('Squares are not adjacent.');
+    }
+    var _lineCap = ctx.lineCap;
+    var _lineWidth = ctx.lineWidth;
+    var _strokeStyle = ctx.strokeStyle;
+    ctx.lineCap = 'square';
+    ctx.lineWidth = WEIGHT;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    if (x1 === x2) {
+      ctx.moveTo(toPixels(x1) + WEIGHT, toPixels(y2));
+      ctx.lineTo(toPixels(x1 + 1) - WEIGHT, toPixels(y2));
+    } else {
+      ctx.moveTo(toPixels(x2), toPixels(y1) + WEIGHT);
+      ctx.lineTo(toPixels(x2), toPixels(y1 + 1) - WEIGHT);
+    }
+    ctx.stroke();
+    ctx.lineCap = _lineCap;
+    ctx.lineWidth = _lineWidth;
+    ctx.strokeStyle = _strokeStyle;
+  }
   function line(x1, y1, x2, y2) {
     var _lineCap = ctx.lineCap;
     var _lineWidth = ctx.lineWidth;
@@ -55,6 +85,8 @@ var Grid = function($el) {
     pixelHeight: pixelHeight,
     pixelWidth: pixelWidth,
     clear: clear,
+    fill: fill,
+    bridge: bridge,
     line: line
   };
 };
