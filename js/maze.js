@@ -1,5 +1,10 @@
 "use strict";
 var __moduleName = "maze";
+function random() {
+  var x = Math.sin(random.seed++) * 10000;
+  return x - Math.floor(x);
+}
+random.seed = Math.random();
 var Maze = function(width, height) {
   var DIRECTIONS = ['north', 'south', 'east', 'west'];
   var GREEN = '#4ecdc4',
@@ -8,7 +13,7 @@ var Maze = function(width, height) {
   var maze,
       grid;
   function randomInt(max) {
-    return Math.floor(Math.random() * max);
+    return Math.floor(random() * max);
   }
   function randomElement(arr) {
     return arr[randomInt(arr.length)];
