@@ -7,16 +7,18 @@
 </head>
 <body>
 	<header>
-		<label for="width">Width</label>
-		<input type="number" id="width" value="20" />
-		<label for="height">Height</label>
-		<input type="number" id="height" value="20" />
-		<button id="generate">Generate</button>
+		<input type="text" id="width" value="20" />
+		&times;
+		<input type="text" id="height" value="20" />
+		<button id="generate">GO</button>
 	</header>
-	<canvas id="canvas"></canvas>
+	<div id="main">
+		<div id="container">
+			<canvas id="canvas"></canvas>
+		</div>
+	</div>
 	<footer>
-		<p>Copyright &copy; 2014 <a href="http://bmills.net">Brandon Mills</a>.</p>
-		<p><a href="https://github.com/btmills/mazes">Fork me on GitHub</a></p>
+		<p>Copyright &copy; 2014 <a href="http://bmills.net">Brandon Mills</a>. <a href="https://github.com/btmills/mazes"><img src="img/GitHub-Mark-Light-32px.png" alt="GitHub" />Fork me on GitHub</a></p>
 	</footer>
 	<script src="js/grid.js"></script>
 	<script src="js/maze.js"></script>

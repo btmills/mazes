@@ -2,8 +2,112 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+	font-family: 'Segoe UI', 'Myriad Pro', Helvetica, sans-serif;
+	font-size: 16px;
+	background: #eee;
+	color: #333;
+}
+
+a,
+a:visited {
+	color: inherit;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: stretch;
+	min-height: 100vh;
+}
+
+header {
+	height: 60px;
+	background: #556270;
+	color: #eee;
+	font-size: 28px;
+	padding: 0 20px;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	vertical-align: center;
+	line-height: 60px;
+}
+
+/* Kill Chrome's blue outline */
+input[type="text"],
+button {
+	border: 0;
+	outline: 0;
+}
+
+input[type="text"] {
+	padding: 0;
+	width: 80px;
+	text-align: center;
+	background: inherit;
+	color: #c7f464;
+	margin: 0;
+	font-size: inherit;
+}
+
+intput[type="text"]::-webkit-inner-spin-button,
+intput[type="text"]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+#generate {
+	border: 0;
+	background: #c7f464;
+	width: 80px;
+	color: #556270;
+	font-size: inherit;
+	margin: 0;
+	cursor: pointer;
+	transition: 0.1s background;
+}
+
+#generate:hover {
+	background: #B5E252;
+}
+
+#generate:active {
+	background: #94C131;
+}
+
+#main {
+	flex-grow: 1;
+	overflow-x: scroll;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
 #canvas {
 	margin: 30px;
+	overflow-x: scroll;
+}
+
+footer {
+	display: flex;
+	justify-content: center;
+	font-size: 15px;
+	background: #556270;
+	color: #eee;
+	line-height: 18px;
+}
+
+footer img {
+	height: 18px;
+	width: 18px;
+	margin-left: 8px;
+	padding: 4px;
+	margin-top: -4px;
+	vertical-align: middle;
 }
