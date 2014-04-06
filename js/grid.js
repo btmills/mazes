@@ -28,8 +28,17 @@ var Grid = function($el) {
     }
     return (pixelWidth() - WEIGHT) / (SIZE + WEIGHT);
   }
-  function toPixels(coord) {
-    return (WEIGHT / 2) + coord * (WEIGHT + SIZE);
+  function toPixels(sq) {
+    return (WEIGHT / 2) + sq * (WEIGHT + SIZE);
+  }
+  function mod(a, b) {
+    return ((a % b) + b) % b;
+  }
+  function toSquares(px) {
+    if (mod(px - WEIGHT, SIZE + WEIGHT) >= (SIZE - WEIGHT)) {
+      return null;
+    }
+    return Math.floor((px - WEIGHT) / (SIZE + WEIGHT));
   }
   function clear() {
     ctx.clearRect(0, 0, pixelWidth(), pixelHeight());
@@ -88,6 +97,8 @@ var Grid = function($el) {
     clear: clear,
     fill: fill,
     bridge: bridge,
-    line: line
+    line: line,
+    toPixels: toPixels,
+    toSquares: toSquares
   };
 };

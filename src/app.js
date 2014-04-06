@@ -1,3 +1,5 @@
+(function () {
+
 var maze;
 
 function generate() {
@@ -36,4 +38,11 @@ if (seed) {
 	random.seed = parseFloat(seed);
 }
 
+var canvas = document.getElementById('canvas');
+canvas.addEventListener('mousemove', function (event) {
+	maze.hover(event.layerX, event.layerY);
+});
+
 generate();
+
+})();

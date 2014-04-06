@@ -33,8 +33,20 @@ var Grid = function ($el) {
 		return (pixelWidth() - WEIGHT) / (SIZE + WEIGHT);
 	}
 
-	function toPixels(coord) {
-		return (WEIGHT / 2) + coord * (WEIGHT + SIZE);
+	function toPixels(sq) {
+		return (WEIGHT / 2) + sq * (WEIGHT + SIZE);
+	}
+
+	function mod(a, b) {
+		return ((a % b) + b) % b;
+	}
+
+	function toSquares(px) {
+		if (mod(px - WEIGHT, SIZE + WEIGHT) >= (SIZE - WEIGHT)) {
+			// On a line
+			return null;
+		}
+		return Math.floor((px - WEIGHT) / (SIZE + WEIGHT));
 	}
 
 	function clear() {
@@ -113,7 +125,9 @@ var Grid = function ($el) {
 		clear,
 		fill,
 		bridge,
-		line
+		line,
+		toPixels,
+		toSquares
 	};
 
 };

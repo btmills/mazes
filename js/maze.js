@@ -54,6 +54,9 @@ var Maze = function(width, height) {
     }), {});
   }
   function relativeDirection(start, end) {
+    if (Math.abs(end.x - start.x) + Math.abs(end.y - start.y) > 1) {
+      return null;
+    }
     if (start.x < end.x) {
       return 'east';
     } else if (end.x < start.x) {
@@ -223,9 +226,32 @@ var Maze = function(width, height) {
     }
     return false;
   }
+  function enterSquare(square) {
+    var pos = lastElement(path);
+    var dir = relativeDirection(pos, square);
+    if (dir)
+      move(dir);
+  }
+  var hover = (function() {
+    var _x,
+        _y;
+    return function(x, y) {
+      x = grid.toSquares(x);
+      y = grid.toSquares(y);
+      if (x !== null && y !== null && (x !== _x || y !== _y)) {
+        _x = x;
+        _y = y;
+        enterSquare({
+          x: x,
+          y: y
+        });
+      }
+    };
+  })();
   maze = generate();
   return {
     render: render,
-    move: move
+    move: move,
+    hover: hover
   };
 };
