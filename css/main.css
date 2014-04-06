@@ -98,7 +98,6 @@ intput[type="text"]::-webkit-outer-spin-button {
 
 #canvas {
 	margin: 30px;
-	overflow-x: scroll;
 }
 
 footer {
