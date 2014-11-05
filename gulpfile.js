@@ -1,14 +1,21 @@
-var gulp    = require('gulp');
-var traceur = require('gulp-traceur');
-var plumber = require('gulp-plumber');
+var gulp       = require('gulp'),
+    plumber    = require('gulp-plumber'),
+    sourcemaps = require('gulp-sourcemaps'),
+    to5        = require('gulp-6to5'),
+    concat     = require('gulp-concat');
 
-var src = ['./src/*.js'];
+var paths = {
+	src: ['src/**/*.js'],
+	dest: 'js'
+};
 
 gulp.task('build', function () {
-	gulp.src(src)
+	gulp.src(paths.src)
 		.pipe(plumber())
-		.pipe(traceur())
-		.pipe(gulp.dest('./js/'));
+		.pipe(sourcemaps.init())
+		.pipe(to5())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest(paths.dest));
 });
 
 gulp.task('watch', function () {
