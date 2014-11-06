@@ -5,7 +5,7 @@ var gulp       = require('gulp'),
     concat     = require('gulp-concat');
 
 var paths = {
-	src: ['src/**/*.js'],
+	src: ['src/**/!(app)*.js', 'src/app.js'],
 	dest: 'js'
 };
 
@@ -14,7 +14,11 @@ gulp.task('build', function () {
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(to5())
-		.pipe(sourcemaps.write())
+		.pipe(concat('index.js'))
+		.pipe(sourcemaps.write('.', {
+			includeContent: false,
+			sourceRoot: '..'
+		}))
 		.pipe(gulp.dest(paths.dest));
 });
 
