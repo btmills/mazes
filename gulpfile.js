@@ -2,7 +2,8 @@ var gulp       = require('gulp'),
     plumber    = require('gulp-plumber'),
     sourcemaps = require('gulp-sourcemaps'),
     to5        = require('gulp-6to5'),
-    concat     = require('gulp-concat');
+    concat     = require('gulp-concat'),
+    uglify     = require('gulp-uglify');
 
 var paths = {
 	src: ['src/**/!(app)*.js', 'src/app.js'],
@@ -14,7 +15,8 @@ gulp.task('build', function () {
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(to5())
-		.pipe(concat('index.js'))
+		.pipe(concat('app.min.js'))
+		.pipe(uglify())
 		.pipe(sourcemaps.write('.', {
 			includeContent: false,
 			sourceRoot: '..'
