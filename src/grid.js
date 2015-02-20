@@ -131,3 +131,5 @@ var Grid = function ($el) {
 	};
 
 };
+
+module.exports = Grid;

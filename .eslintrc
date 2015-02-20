@@ -1,0 +1,9 @@
+{
+	"environments": {
+		"browser": true
+	},
+	"rules": {
+		"quotes": [2, "single"],
+		"no-multi-spaces": [2, { "exceptions": { "VariableDeclarator": true } }]
+	}
+}

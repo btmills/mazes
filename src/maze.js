@@ -1,8 +1,5 @@
-function random() {
-	var x = Math.sin(random.seed++) * 10000;
-	return x - Math.floor(x);
-}
-random.seed = Math.random();
+var Grid = require('./grid');
+var random = require('./random');
 
 var Maze = function (width, height) {
 
@@ -292,3 +289,5 @@ var Maze = function (width, height) {
 	};
 
 }
+
+module.exports = Maze;

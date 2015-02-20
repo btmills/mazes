@@ -1,5 +1,8 @@
 (function () {
 
+var Maze = require('./maze');
+var random = require('./random');
+
 var maze;
 
 function generate() {
