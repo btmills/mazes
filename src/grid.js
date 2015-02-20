@@ -1,96 +1,146 @@
-var Grid = function ($el) {
+import { mod } from './util';
+import { DARK_GRAY } from './colors';
 
-	var SIZE = 20; // Width of square in pixels
-	var WEIGHT = 2; // Width of line in pixels
+const SIZE = 20; // Width of a square in pixels
+const WEIGHT = 2; // Width of the line between squares in pixels
 
-	var ctx = $el.getContext('2d');
+export default class Grid {
 
-	function pixelHeight(val) {
-		if (arguments.length > 0) {
-			ctx.canvas.height = val;
-		}
-		return ctx.canvas.height;
+	get pixelHeight() {
+		return this.ctx.canvas.height;
 	}
 
-	function pixelWidth(val) {
-		if (arguments.length > 0) {
-			ctx.canvas.width = val;
-		}
-		return ctx.canvas.width;
+	set pixelHeight(pixels) {
+		this.ctx.canvas.height = pixels;
 	}
 
-	function gridHeight(squares) {
-		if (arguments.length > 0) {
-			pixelHeight(squares * SIZE + (squares + 1) * WEIGHT);
-		}
-		return (pixelHeight() - WEIGHT) / (SIZE + WEIGHT);
+	get pixelWidth() {
+		return this.ctx.canvas.width;
 	}
 
-	function gridWidth(squares) {
-		if (arguments.length > 0) {
-			pixelWidth(squares * SIZE + (squares + 1) * WEIGHT);
-		}
-		return (pixelWidth() - WEIGHT) / (SIZE + WEIGHT);
+	set pixelWidth(pixels) {
+		this.ctx.canvas.width = pixels;
 	}
 
-	function toPixels(sq) {
-		return (WEIGHT / 2) + sq * (WEIGHT + SIZE);
+	get gridHeight() {
+		return (this.pixelHeight - WEIGHT) / (SIZE + WEIGHT);
 	}
 
-	function mod(a, b) {
-		return ((a % b) + b) % b;
+	set gridHeight(squares) {
+		this.pixelHeight = squares * SIZE + (squares + 1) * WEIGHT;
 	}
 
-	function toSquares(px) {
-		if (mod(px - WEIGHT, SIZE + WEIGHT) >= (SIZE - WEIGHT)) {
+	get gridWidth() {
+		return (this.pixelWidth - WEIGHT) / (SIZE + WEIGHT);
+	}
+
+	set gridWidth(squares) {
+		this.pixelWidth = squares * SIZE + (squares + 1) * WEIGHT;
+	}
+
+	/**
+	 * Converts from square units to pixel units.
+	 * @param {int} squares Zero-based square coordinate.
+	 * @returns {int} The coordinate of the pixel closest to the origin in the square.
+	 * @public
+	 */
+	static toPixels(squares) {
+		return (WEIGHT / 2) + squares * (WEIGHT + SIZE);
+	}
+
+	/**
+	 * Converts from pixel units to square units.
+	 * @param {int} pixels Zero-based coordinate of a pixel.
+	 * @returns {int} The zero-based coordinate of the square containing the pixel, or -1 if the
+	 *                pixel is on a boundary between squares.
+	 * @public
+	 */
+	static toSquares(pixels) {
+		if (mod(pixels - WEIGHT, SIZE + WEIGHT) >= (SIZE - WEIGHT)) {
 			// On a line
-			return null;
+			return -1;
 		}
-		return Math.floor((px - WEIGHT) / (SIZE + WEIGHT));
+
+		return Math.floor((pixels - WEIGHT) / (SIZE + WEIGHT));
 	}
 
-	function clear() {
-		ctx.clearRect(0, 0, pixelWidth(), pixelHeight());
+	/**
+	 * Creates a new Grid instance given a drawing canvas.
+	 * @param {HTMLCanvasElement} $canvas The <canvas> element on which to draw.
+	 */
+	constructor($canvas) {
+		this.ctx = $canvas.getContext('2d');
 	}
 
-	function fill(x, y, color) {
-		var _fillStyle = ctx.fillStyle;
+	/**
+	 * Clears the entire drawing surface.
+	 * @returns {void}
+	 * @public
+	 */
+	clear() {
+		this.ctx.clearRect(0, 0, this.pixelWidth, this.pixelHeight);
+	}
+
+	/**
+	 * Fills the interior of a grid square with a color.
+	 * @param {int} x Zero-based x-coordinate of the square in units of squares.
+	 * @param {int} y Zero-based y-coordinate of the square in units of squares.
+	 * @param {string} color A CSS color value.
+	 * @returns {void}
+	 * @public
+	 */
+	fill(x, y, color) {
+		const ctx = this.ctx;
+		const _fillStyle = ctx.fillStyle;
 		ctx.fillStyle = color;
 
 		ctx.fillRect(
-			toPixels(x) + (WEIGHT / 2),
-			toPixels(y) + (WEIGHT / 2),
-			SIZE, SIZE
+			Grid.toPixels(x) + (WEIGHT / 2),
+			Grid.toPixels(y) + (WEIGHT / 2),
+			SIZE,
+			SIZE
 		);
 
 		ctx.fillStyle = _fillStyle;
 	}
 
-	function bridge(x1, y1, x2, y2, color) {
+	/**
+	 * Draws the border shared by two squares.
+	 * @param {int} x1 Zero-based x-coordinate of the first square in units of squares.
+	 * @param {int} y1 Zero-based y-coordinate of the first square in units of squares.
+	 * @param {int} x2 Zero-based x-coordinate of the second square in units of squares.
+	 * @param {int} y2 Zero-based y-coordinate of the second square in units of squares.
+	 * @param {string} color A CSS color value.
+	 * @returns {void}
+	 * @public
+	 */
+	bridge(x1, y1, x2, y2, color) {
 		if (Math.abs(x2 - x1) + Math.abs(y2 - y1) !== 1) {
 			throw new Error('Squares are not adjacent.');
 		}
 
-		var x = Math.max(x1, x2), y = Math.max(y1, y2);
+		const x = Math.max(x1, x2);
+		const y = Math.max(y1, y2);
 
-		var _lineCap     = ctx.lineCap;
-		var _lineWidth   = ctx.lineWidth;
-		var _strokeStyle = ctx.strokeStyle;
-		ctx.lineCap      = 'square';
-		ctx.lineWidth    = WEIGHT;
-		ctx.strokeStyle  = color;
+		const ctx          = this.ctx;
+		const _lineCap     = ctx.lineCap;
+		const _lineWidth   = ctx.lineWidth;
+		const _strokeStyle = ctx.strokeStyle;
+		ctx.lineCap        = 'square';
+		ctx.lineWidth      = WEIGHT;
+		ctx.strokeStyle    = color;
 
 		ctx.beginPath();
 		if (x1 === x2) {
 			// Bridge north/south squares
 			// Narrower x dimensions
-			ctx.moveTo(toPixels(x1) + WEIGHT, toPixels(y));
-			ctx.lineTo(toPixels(x1 + 1) - WEIGHT, toPixels(y));
+			ctx.moveTo(Grid.toPixels(x1) + WEIGHT, Grid.toPixels(y));
+			ctx.lineTo(Grid.toPixels(x1 + 1) - WEIGHT, Grid.toPixels(y));
 		} else {
 			// Bridge east/west squares
 			// Narrower y dimensions
-			ctx.moveTo(toPixels(x), toPixels(y1) + WEIGHT);
-			ctx.lineTo(toPixels(x), toPixels(y1 + 1) - WEIGHT);
+			ctx.moveTo(Grid.toPixels(x), Grid.toPixels(y1) + WEIGHT);
+			ctx.lineTo(Grid.toPixels(x), Grid.toPixels(y1 + 1) - WEIGHT);
 		}
 		ctx.stroke();
 
@@ -99,17 +149,28 @@ var Grid = function ($el) {
 		ctx.strokeStyle = _strokeStyle;
 	}
 
-	function line(x1, y1, x2, y2) {
-		var _lineCap     = ctx.lineCap;
-		var _lineWidth   = ctx.lineWidth;
-		var _strokeStyle = ctx.strokeStyle;
-		ctx.lineCap      = 'round';
-		ctx.lineWidth    = WEIGHT;
-		ctx.strokeStyle  = '#16191d';
+	/**
+	 * Draws a line between the upper left corners of two grid squares.
+	 * @param {int} x1 Zero-based x-coordinate of the first square relative to the origin.
+	 * @param {int} y1 Zero-based y-coordinate of the first square relative to the origin.
+	 * @param {int} x2 Zero-based x-coordinate of the second square relative to the origin.
+	 * @param {int} y2 Zero-based y-coordinate of the second square relative to the origin.
+	 * @param {string} [color] A CSS color value. Defaults to dark gray.
+	 * @returns {void}
+	 * @public
+	 */
+	line(x1, y1, x2, y2, color = DARK_GRAY) {
+		const ctx          = this.ctx;
+		const _lineCap     = ctx.lineCap;
+		const _lineWidth   = ctx.lineWidth;
+		const _strokeStyle = ctx.strokeStyle;
+		ctx.lineCap        = 'square';
+		ctx.lineWidth      = WEIGHT;
+		ctx.strokeStyle    = color;
 
 		ctx.beginPath();
-		ctx.moveTo(toPixels(x1), toPixels(y1));
-		ctx.lineTo(toPixels(x2), toPixels(y2));
+		ctx.moveTo(Grid.toPixels(x1), Grid.toPixels(y1));
+		ctx.lineTo(Grid.toPixels(x2), Grid.toPixels(y2));
 		ctx.stroke();
 
 		ctx.lineCap     = _lineCap;
@@ -117,19 +178,4 @@ var Grid = function ($el) {
 		ctx.strokeStyle = _strokeStyle;
 	}
 
-	return {
-		height: gridHeight,
-		width: gridWidth,
-		pixelHeight,
-		pixelWidth,
-		clear,
-		fill,
-		bridge,
-		line,
-		toPixels,
-		toSquares
-	};
-
-};
-
-module.exports = Grid;
+}

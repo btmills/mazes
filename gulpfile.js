@@ -14,6 +14,7 @@ var babelify     = require('babelify'),
 	uglify       = require('gulp-uglify')*/;
 
 var paths = {
+	dest: './js',
 	js: {
 		src: './src/**/*.js',
 		main: './src/app.js',

@@ -1,51 +1,69 @@
-(function () {
+import Maze from './maze';
+import { random } from './util';
 
-var Maze = require('./maze');
-var random = require('./random');
+class App {
+	get width() { return +this.$width.value; }
+	set width(value) { this.$width.value = value; }
 
-var maze;
+	get height() { return +this.$height.value; }
+	set height(value) { this.$height.value = value; }
 
-function generate() {
-	var width = +document.getElementById('width').value;
-	var height = +document.getElementById('height').value;
+	constructor() {
+		this.$width = document.querySelector('#width');
+		this.$height = document.querySelector('#height');
+		this.$permalink = document.querySelector('#permalink');
+		this.$canvas = document.querySelector('#canvas');
 
-	var hash = '#' + width + 'x' + height + 's' + random.seed;
-	var href = window.location.href.split('#')[0] + hash;
-	document.getElementById('permalink').setAttribute('href', href);
+		document.querySelector('#generate').addEventListener('click', this.onGenerate.bind(this));
+		document.body.addEventListener('keydown', this.onKeyDown.bind(this));
+		this.$canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
 
-	maze = new Maze(width, height);
-	maze.render(document.getElementById('canvas'));
-}
+		// Attempt to read maze parameters from URL hash
+		const [, width, height, seed] = /#(\d+)x(\d+)(?:s(\d+.\d+))?|.*/.exec(window.location.hash);
 
-document.getElementById('generate')
-	.addEventListener('click', function (event) {
+		if (width && height) {
+			this.width = width;
+			this.height = height;
+		}
+
+		if (seed) {
+			random.seed = parseFloat(seed);
+		}
+
+		this.generate();
+	}
+
+	generate() {
+		this.setPermalink();
+
+		this.maze = new Maze(this.width, this.height);
+		this.maze.render(this.$canvas);
+	}
+
+	setPermalink() {
+		const hash = `#${this.width}x${this.height}s${random.seed}`;
+		const href = window.location.href.split('#')[0] + hash;
+		window.location.hash = hash;
+		this.$permalink.setAttribute('href', href);
+	}
+
+	onGenerate(event) {
 		event.preventDefault();
-		generate();
-	});
-document.body.addEventListener('keyup', function (event) {
-	var key = event.key || event.charCode || event.keyCode;
-	var direction = ['west', 'north', 'east', 'south'][key - 37];
-	if (!direction) return;
+		this.generate();
+	}
 
-	event.preventDefault();
-	maze.move(direction);
-});
+	onKeyDown(event) {
+		const direction = ['west', 'north', 'east', 'south'][event.keyCode - 37];
+		if (!direction) return;
 
-var [, width, height, seed] = /#(\d+)x(\d+)(?:s(\d+.\d+))?|.*/
-	.exec(window.location.hash);
-if (width && height) {
-	document.getElementById('width').value = width;
-	document.getElementById('height').value = height;
-}
-if (seed) {
-	random.seed = parseFloat(seed);
+		event.preventDefault();
+		this.maze.move(direction);
+	}
+
+	onMouseMove(event) {
+		const clientRect = this.$canvas.getBoundingClientRect();
+		this.maze.hover(event.clientX - clientRect.left, event.clientY - clientRect.top);
+	}
 }
 
-var canvas = document.getElementById('canvas');
-canvas.addEventListener('mousemove', function (event) {
-	maze.hover(event.layerX, event.layerY);
-});
-
-generate();
-
-})();
+new App();
