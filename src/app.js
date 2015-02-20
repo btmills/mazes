@@ -17,7 +17,6 @@ class App {
 		document.querySelector('#generate')
 			.addEventListener('click', (event) => {
 				event.preventDefault();
-				this.clearPermalink();
 				this.generate();
 			});
 
@@ -60,11 +59,8 @@ class App {
 	setPermalink() {
 		let hash = `#${this.width}x${this.height}s${random.seed}`;
 		let href = window.location.href.split('#')[0] + hash;
+		window.location.hash = hash;
 		this.$permalink.setAttribute('href', href);
-	}
-
-	clearPermalink() {
-		window.location.href = window.location.href.split('#')[0];
 	}
 }
 
