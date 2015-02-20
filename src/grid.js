@@ -1,4 +1,5 @@
-import mod from './mod';
+import { mod } from './util';
+import { DARK_GRAY } from './colors';
 
 const SIZE = 20; // Width of a square in pixels
 const WEIGHT = 2; // Width of the line between squares in pixels
@@ -154,11 +155,11 @@ export default class Grid {
 	 * @param {int} y1 Zero-based y-coordinate of the first square relative to the origin.
 	 * @param {int} x2 Zero-based x-coordinate of the second square relative to the origin.
 	 * @param {int} y2 Zero-based y-coordinate of the second square relative to the origin.
-	 * @param {string} [color='#16191d'] A CSS color value. Defaults to a dark gray.
+	 * @param {string} [color] A CSS color value. Defaults to dark gray.
 	 * @returns {void}
 	 * @public
 	 */
-	line(x1, y1, x2, y2, color = '#16191d') {
+	line(x1, y1, x2, y2, color = DARK_GRAY) {
 		const ctx          = this.ctx;
 		const _lineCap     = ctx.lineCap;
 		const _lineWidth   = ctx.lineWidth;

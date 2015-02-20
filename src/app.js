@@ -1,5 +1,5 @@
 import Maze from './maze';
-import random from './random';
+import { random } from './util';
 
 class App {
 	get width() { return +this.$width.value; }
