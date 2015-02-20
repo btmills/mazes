@@ -14,26 +14,12 @@ class App {
 		this.$permalink = document.querySelector('#permalink');
 		this.$canvas = document.querySelector('#canvas');
 
-		document.querySelector('#generate').addEventListener('click', (event) => {
-			event.preventDefault();
-			this.generate();
-		});
-
-		document.body.addEventListener('keyup', (event) => {
-			let key = event.key || event.charCode || event.keyCode;
-			let direction = ['west', 'north', 'east', 'south'][key - 37];
-			if (!direction) return;
-
-			event.preventDefault();
-			this.maze.move(direction);
-		});
-
-		this.$canvas.addEventListener('mousemove', (event) => {
-			this.maze.hover(event.layerX, event.layerY);
-		});
+		document.querySelector('#generate').addEventListener('click', this.onGenerate.bind(this));
+		document.body.addEventListener('keydown', this.onKeyDown.bind(this));
+		this.$canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
 
 		// Attempt to read maze parameters from URL hash
-		let [, width, height, seed] = /#(\d+)x(\d+)(?:s(\d+.\d+))?|.*/.exec(window.location.hash);
+		const [, width, height, seed] = /#(\d+)x(\d+)(?:s(\d+.\d+))?|.*/.exec(window.location.hash);
 
 		if (width && height) {
 			this.width = width;
@@ -55,10 +41,28 @@ class App {
 	}
 
 	setPermalink() {
-		let hash = `#${this.width}x${this.height}s${random.seed}`;
-		let href = window.location.href.split('#')[0] + hash;
+		const hash = `#${this.width}x${this.height}s${random.seed}`;
+		const href = window.location.href.split('#')[0] + hash;
 		window.location.hash = hash;
 		this.$permalink.setAttribute('href', href);
+	}
+
+	onGenerate(event) {
+		event.preventDefault();
+		this.generate();
+	}
+
+	onKeyDown(event) {
+		const direction = ['west', 'north', 'east', 'south'][event.keyCode - 37];
+		if (!direction) return;
+
+		event.preventDefault();
+		this.maze.move(direction);
+	}
+
+	onMouseMove(event) {
+		const clientRect = this.$canvas.getBoundingClientRect();
+		this.maze.hover(event.clientX - clientRect.left, event.clientY - clientRect.top);
 	}
 }
 
