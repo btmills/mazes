@@ -203,8 +203,8 @@ var Maze = function (width, height) {
 
 		grid = new Grid($el);
 		grid.clear();
-		grid.width(width);
-		grid.height(height);
+		grid.gridWidth = width;
+		grid.gridHeight = height;
 
 		for (x = 0; x < width; x++) {
 			for (y = 0; y < height; y++) {
@@ -269,8 +269,8 @@ var Maze = function (width, height) {
 		var _x, _y;
 
 		return function (x, y) {
-			x = grid.toSquares(x);
-			y = grid.toSquares(y);
+			x = Grid.toSquares(x);
+			y = Grid.toSquares(y);
 			if (x !== null && y !== null && (x !== _x || y !== _y)) {
 				_x = x;
 				_y = y;

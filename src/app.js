@@ -14,11 +14,10 @@ class App {
 		this.$permalink = document.querySelector('#permalink');
 		this.$canvas = document.querySelector('#canvas');
 
-		document.querySelector('#generate')
-			.addEventListener('click', (event) => {
-				event.preventDefault();
-				this.generate();
-			});
+		document.querySelector('#generate').addEventListener('click', (event) => {
+			event.preventDefault();
+			this.generate();
+		});
 
 		document.body.addEventListener('keyup', (event) => {
 			let key = event.key || event.charCode || event.keyCode;
@@ -34,8 +33,7 @@ class App {
 		});
 
 		// Attempt to read maze parameters from URL hash
-		let [, width, height, seed] = /#(\d+)x(\d+)(?:s(\d+.\d+))?|.*/
-			.exec(window.location.hash);
+		let [, width, height, seed] = /#(\d+)x(\d+)(?:s(\d+.\d+))?|.*/.exec(window.location.hash);
 
 		if (width && height) {
 			this.width = width;
